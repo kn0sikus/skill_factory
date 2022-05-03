@@ -1,7 +1,11 @@
+"""Игра угадай число
+Компьютер сам загадывает и сам угадывает число (3 различных метода)
+"""
+
 import numpy as np
 
-def modified_predict(number:int=1) -> int:
-    """Рандомно угадываем число
+def modified_predict(number:int=1) -> int: # 1ый метод
+    """Угадываем число случайным образом с модификацией
 
     Args:
         number (int, optional): Загаданное число. Defaults to 1.
@@ -11,7 +15,7 @@ def modified_predict(number:int=1) -> int:
     """
 
     count = 0
-    mean=1
+    min=1
     max=101
     
     while True:
@@ -29,14 +33,14 @@ def modified_predict(number:int=1) -> int:
         
     return(count)
 
-def round_predict(number:int=1) -> int:
-    """_summary_
+def mean_predict(number:int=1) -> int: # 2ой метод
+    """Угадываем число методом среднее арифметическое
 
     Args:
         number (int, optional): _description_. Defaults to 1.
 
     Returns:
-        int: _description_
+        int: Число попыток
     """
     min=1
     max=100
@@ -44,31 +48,50 @@ def round_predict(number:int=1) -> int:
     
     while True:
         count+=1
-        mid=round((min+max)/2)
+        mean=round((min+max)/2)
         
-        if mid > number:
-            max=mid
+        if mean > number:
+            max=mean
         
-        if mid < number:
-            min=mid
+        if mean < number:
+            min=mean
         
-        if mid == number:
+        if mean == number:
             break # выход из цикла, если угадали
         
         if min==1 and max==2:
             count+=1
-            mid=1
-            if mid == number:
+            mean=1
+            if mean == number:
                 break
             
     return count
+
+def random_predict(number:int=1) -> int: # 3ий метод
+    """Рандомно угадываем число
+
+    Args:
+        number (int, optional): Загаданное число. Defaults to 1.
+
+    Returns:
+        int: Число попыток
+    """
+
+    count = 0
+
+    while True:
+        count += 1
+        predict_number = np.random.randint(1, 101) # предполагаемое число
+        if number == predict_number:
+            break # выход из цикла, если угадали
+    return(count)
         
 
 def score_game(function) -> int:
     """За какое количество попыток в среднем из 1000 подходов угадывает наш алгоритм
 
     Args:
-        function ([type]): функция угадывания
+        function ([type]): метод угадывания
 
     Returns:
         int: среднее количество попыток
@@ -83,7 +106,8 @@ def score_game(function) -> int:
 
     score = int(np.mean(count_ls)) # находим среднее количество попыток
 
-    print(f'Ваш алгоритм угадывает число в среднем за: {score} попыток')
     return(score)
 
-score_game(round_predict)
+print(f"Алгоритм modified_predict угадывает число в среднем за {score_game(modified_predict)} попыток")
+print(f"Алгоритм mean_predict угадывает число в среднем за {score_game(mean_predict)} попыток")
+print(f"Алгоритм random_predict угадывает число в среднем за {score_game(random_predict)} попыток")
